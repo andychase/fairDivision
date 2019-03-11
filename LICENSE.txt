@@ -1,13 +1,6 @@
-# Fair Division Calculator
-
-This applet contains the source code for a fair division algorithm.
-
-Licence
--------
-
 From Author:
 
-> You are welcome to use it, modify it, etc. with attribution. 
+> You are welcome to use it, modify it, etc. with attribution.
 
 ```
     ----- ACKNOWLEDGEMENTS -----
