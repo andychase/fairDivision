@@ -5,6 +5,8 @@
 //Implements the simplex class, which represents an n-dimensional 
 //structure used in the fairDivision calculator
 
+import java.util.Arrays;
+
 class Simplex {
 
     int players;
@@ -119,6 +121,20 @@ class Simplex {
                 output = potentialRoom;
             }
         }
+
+//        System.out.print(Arrays.toString(new int[]{
+//                output, newPoint, pivot, marker,
+//                points[0].label, points[0].elements[0], points[0].level,
+//                points[1].label, points[1].elements[0], points[1].level,
+//                points[2].label, points[2].elements[0], points[2].level,}).replace("[", "").replace("]", ","));
+//        double cuts[] = points[newPoint].textTransform(divType);
+//        for (int i = 0; i < players; i++) {
+//            System.out.print(Math.round(totalRent * (cuts[i + 1] - cuts[i])) / 100.0);
+//            System.out.print(",");
+//        }
+//        System.out.print("\n");
+
+
         points[newPoint].label = output + 1;
         findPivot();
         return true;
@@ -248,9 +264,3 @@ class Simplex {
     }
 
 }
-
-
-
-
-
-

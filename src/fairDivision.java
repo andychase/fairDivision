@@ -11,6 +11,10 @@ import java.lang.*;
 import java.awt.*;
 import java.applet.*;
 import java.net.*;
+import java.util.Arrays;
+import java.util.Random;
+
+import static java.lang.Math.pow;
 
 public class fairDivision extends Applet {
 
@@ -396,7 +400,54 @@ public class fairDivision extends Applet {
                 //see if the input is valid, and use that as number of players
                 if (players == -1) {
                     try {
+                        divType = "Rent";
                         players = Integer.parseInt(choice.getText());
+                        Random rand = new Random();
+                        int runs = 1000;
+                        for (int prop = 5; prop < 20; prop++) {
+                            double[] runResults = new double[runs];
+
+                            double[] results = new double[100];
+                            for (int i = 0; i < runs; i++) {
+                                players = 2;
+                                totalRent = rand.nextInt(2000) + 100;
+                                bids = new double[players][players];
+                                makeSimplex();
+                                for (int p = 0; p < players; p++) {
+                                    for (int p2 = 0; p2 < players; p2++) {
+                                        bids[p][p2] = rand.nextInt((int) (totalRent * ((double) prop) / 10));
+                                    }
+                                }
+
+                                int target = (int) ((Math.log((double) (totalRent * 10000))) / (Math.log((double) (2))));
+                                divvy.autoChoose();
+                                while (divvy.level < target && divvy.autoChoose(bids)) {
+                                    graduated = divvy.bigAl();
+                                }
+                                double result1 = stdDev();
+
+                                for(int k=0; k<bids.length/2; k++){ double[] temp = bids[k]; bids[k] = bids[bids.length -k -1]; bids[bids.length -k -1] = temp; }
+
+                                makeSimplex();
+                                divvy.autoChoose();
+                                while (divvy.level < target && divvy.autoChoose(bids)) {
+                                    graduated = divvy.bigAl();
+                                }
+                                double result2 = stdDev();
+
+
+
+                                runResults[i] = Math.abs(result2 - result1);
+                            }
+
+                            System.out.print(prop);
+                            System.out.print(": ");
+                            System.out.println(Arrays.stream(runResults).sum() / runs);
+                        }
+
+                        history.appendText("done");
+
+
                     } catch (NumberFormatException exc) {
                         choice.setText("");
                         history.appendText("Between 2 and 26 players please.\n");
@@ -731,10 +782,6 @@ public class fairDivision extends Applet {
                 // as a fix to make it print in order of the Players:
                 for (int j = 0; j < players; j++) {
                     if ((char) ((int) alpha + i) == divvy.suggestedOwner(j + 1)) {
-                        // history.appendText("     Player "+divvy.suggestedOwner(i+1)+
-                        // " pays $"+(Math.round(totalRent*(cuts[i+1]-cuts[i]))/100.0)+
-                        // " for Room "+(i+1)+".\n");
-                        //
                         history.appendText("     Player " + divvy.suggestedOwner(j + 1) +
                                 " pays $" + (Math.round(totalRent * (cuts[j + 1] - cuts[j])) / 100.0) +
                                 " for Room " + (j + 1) + ".\n");
@@ -754,6 +801,16 @@ public class fairDivision extends Applet {
         }
         history.appendText("\n");
     }
+
+    public double stdDev() {
+        double cuts[] = divvy.dummy.textTransform(divvy.suggestedTransform());
+        double rents = 0;
+        for (int i = 0; i < players; i++) {
+            rents += Math.pow((((double) totalRent)/players) - (Math.round(totalRent * (cuts[i + 1] - cuts[i])) / 100.0), 2);
+        }
+        return Math.sqrt(rents/players);
+    }
+
 
     //initializes the simplex, and also fetches the rent/cake/chore graphics
 
@@ -836,6 +893,9 @@ public class fairDivision extends Applet {
             int target = (int) ((Math.log((double) (totalRent * 10000))) / (Math.log((double) (2))));
             //FS: debug added this next line
             System.out.println("Level: " + target);
+
+            System.out.println("choice,newPoint,pivot,marker,p0 label,p0 element,p0 level,p1 label,p1 element,p1 level, p2 label,p2 element,p2 level,r1,r2");
+            divvy.autoChoose();
             while (divvy.level < target && divvy.autoChoose(bids)) {
 
                 graduated = divvy.bigAl();

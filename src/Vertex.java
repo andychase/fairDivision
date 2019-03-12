@@ -36,7 +36,7 @@ class Vertex {
         {
             int num = 0;
             for (int i = 0; i < this.dimension; i++) {
-                if (elements[i] % 2 != 0) {
+                if ((elements[i] + level) % 2 != 0) {
                     num++;
                 }
             }
