@@ -165,7 +165,6 @@ class Simplex {
             level++;
             points[dimension - 1].level = level + 1;
         }
-
         //FIRST OR LAST BUT NOT ONLY VERTEX IN LOWER LIST
         else if ((marker != 0) && (pivot == 0 || pivot == marker)) {
             shift(pivot + 1, dimension - 1, -1);
@@ -174,14 +173,12 @@ class Simplex {
             newPoint = dimension - 1;
             points[newPoint].level = points[dimension - 2].level;
         }
-
         //INTERNAL TO EITHER LIST
         else if (pivot != 0 && pivot != marker && pivot != marker + 1 && pivot != dimension - 1) {
             points[pivot] = points[pivot - 1].plus(points[pivot + 1]).minus(points[pivot]);
             points[pivot].level = points[pivot - 1].level;
             newPoint = pivot;
         }
-
         //FIRST BUT BUT NOT ONLY VERTEX IN UPPER LIST
         else if (pivot == marker + 1 && pivot != dimension - 1) {
             Vertex temp = points[pivot + 1].times(2);
@@ -189,7 +186,6 @@ class Simplex {
             points[pivot].level = level + 1;
             newPoint = pivot;
         }
-
         //ONLY VERTEX OF UPPER LIST
         else if (pivot == marker + 1 && pivot == dimension - 1) {
             shift(0, pivot - 1, 1);
@@ -199,7 +195,6 @@ class Simplex {
             points[0].level = level;
             newPoint = 0;
         }
-
         //LAST BUT NOT ONLY VERTEX OF UPPER LIST
         else if (pivot == dimension - 1 && marker < dimension - 2) {
             Vertex temp = points[pivot].minus(points[pivot - 1]);

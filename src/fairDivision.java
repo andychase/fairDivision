@@ -837,12 +837,7 @@ public class fairDivision extends Applet {
             //FS: debug added this next line
             System.out.println("Level: " + target);
             while (divvy.level < target && divvy.autoChoose(bids)) {
-                for (int i = 0; i < players; i++) {
-                    for (int j = 0; j < players; j++) {
-                        //FS: changed the rounding orig=10000
-                        //bids[i][j] = (Math.round(bids[i][j]*10000))/10000.0;
-                    }
-                }
+
                 graduated = divvy.bigAl();
             }
             howsThis();
