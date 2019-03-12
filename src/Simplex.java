@@ -74,36 +74,6 @@ class Simplex {
     //initial Simplex for Rent division -- specified as a cutset space
     //then inverted using rentInvert()
     // if(divType == "Rent") {
-	
-	/*      Vertex temp[] = new Vertex[dimension];
-	for(int i = 0; i < dimension; i++) {
-	points[i] = new Vertex(players-1);
-	}
-	for(int i = 0; i < players; i++) {
-	    temp[i] = new Vertex(players);
-	    points[i].level = 0;
-	    for(int j = 0; j < players; j++) {
-		temp[i].elements[j] = 1;
-	    }
-	}
-      for(int col = 0; col < players; col++) {
-	temp[col].elements[col]= 2 - players;
-      }
-      for(int inv = 0; inv < dimension-1; inv++) {
-	temp[inv].rentInvert();
-	points[inv].label = inv+1;
-      }
-      for(int k = 0; k < players; k++) {
-	  for (int l = 0; l < players-1; l++) {
-	      points[k].elements[l] = temp[k].elements[l];
-	  }
-      } 
-      points[dimension-1] = points[0].plus(points[dimension-2]);
-      marker = dimension-2;
-      newPoint = dimension-1;
-      points[dimension-1].level = 1;
-      }
-      }*/
 
     //autoChoose automatically iterates the algorithm for Chore division, 
     //choosing the smallest piece in the Simplex as long as there is one that 
@@ -137,13 +107,19 @@ class Simplex {
         char person = points[newPoint].getOwner(divType);
         char alpha = 'A';
         int who = (int) person - (int) alpha;
-        int temp = 0;
-        for (int i = 1; i < points[newPoint].dimension + 1; i++) {
-            if ((bids[who][i] - (totalRent * points[newPoint].getTransform(i, divType))) > (bids[who][temp] - (totalRent * points[newPoint].getTransform(temp, divType)))) {
-                temp = i;
+        int output = 0;
+        for (int potentialRoom = 1; potentialRoom < points[newPoint].dimension + 1; potentialRoom++) {
+            double potentialRoomBid = bids[who][potentialRoom];
+            double potentialRoomPrice = (totalRent * points[newPoint].getTransform(potentialRoom, divType));
+            double potentialRoomDiscount = potentialRoomBid - potentialRoomPrice;
+            double currentSelectionBid = bids[who][output];
+            double currentSelectionPrice = (totalRent * points[newPoint].getTransform(output, divType));
+            double currentSelectionDiscount = currentSelectionBid - currentSelectionPrice;
+            if (potentialRoomDiscount > currentSelectionDiscount) {
+                output = potentialRoom;
             }
         }
-        points[newPoint].label = temp + 1;
+        points[newPoint].label = output + 1;
         findPivot();
         return true;
     }
